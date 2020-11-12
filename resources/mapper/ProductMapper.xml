@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lv.dao.ProductDao">
+
+    <select id="getEightProduct" parameterType="String" resultType="product">
+    SELECT p.* from t_product p,t_category c WHERE p.c_id=c.c_id and c.cName=#{cName} LIMIT 8;
+
+</select>
+
+    <select id="findProductById" parameterType="int" resultType="product">
+        SELECT * from t_product WHERE p_id=#{pId};
+    </select>
+
+    <select id="findProductByCategoryId" resultType="product">
+
+        SELECT * from t_product WHERE c_id=#{cId}
+
+        <if test="orderBy!=null and orderBy!=''">
+            ORDER BY ${orderBy}
+        </if>
+
+        LIMIT #{StartIndex},20;
+
+    </select>
+
+
+    <select id="getTotalForCategory" parameterType="int" resultType="int">
+        SELECT count(1) FROM t_product WHERE c_id=#{cId}
+    </select>
+
+    <select id="getCategoryName" parameterType="int" resultType="category">
+        select * from t_category WHERE c_id=#{cId};
+    </select>
+
+
+    <select id="getProductByOrderByPrice" resultType="product" parameterType="int">
+        SELECT * from t_product WHERE c_id=#{cId} ORDER BY price LIMIT 0,20;
+    </select>
+
+
+    <select id="findProductByKeyword" resultType="product">
+        SELECT * from t_product WHERE 1=1
+        <if test="keyword!=null">
+            AND pName like "%"#{keyword}"%"
+        </if>
+        <if test="cId!=null">
+            AND c_id =#{cId}
+        </if>
+        <if test="orderBy!=null and orderBy!=''">
+            ORDER BY ${orderBy}
+        </if>
+        <if test="StartIndex!=null">
+            LIMIT #{StartIndex},20;
+        </if>
+
+    </select>
+
+
+    <select id="getTotalForSearch" resultType="int">
+        SELECT count(*) from t_product WHERE 1=1
+        <if test="keyword!=null">
+            AND pName like "%"#{keyword}"%"
+        </if>
+        <if test="cId!=null">
+            AND c_id =#{cId}
+        </if>
+    </select>
+</mapper>
+
+
